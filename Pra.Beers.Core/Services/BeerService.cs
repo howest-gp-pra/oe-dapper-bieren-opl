@@ -6,25 +6,25 @@ using System.Data.SqlClient;
 using Dapper;
 using Dapper.Contrib.Extensions;
 using System.Linq;
-using Pra.Bieren.Core.Entities;
+using Pra.Beers.Core.Entities;
 
-namespace Pra.Bieren.Core.Services
+namespace Pra.Beers.Core.Services
 {
-    public class BierService
+    public class BeerService
     {
-        private string CS = @"Data Source=(local)\SQLEXPRESS;Initial Catalog=praBieren; Integrated security=true;";
+        private string connectionString = @"Data Source=(local)\SQLEXPRESS;Initial Catalog=praBeers; Integrated security=true;";
         
         // READ ALL RECORDS
-        public List<BierSoort> GetBierSoorten()
+        public List<BeerType> GetBeerTypes()
         {
-            using (SqlConnection connection = new SqlConnection(CS)) 
+            using (SqlConnection connection = new SqlConnection(connectionString)) 
             { 
                 try 
                 { 
                     connection.Open(); 
-                    List<BierSoort> biersoorten = connection.GetAll<BierSoort>().ToList();
-                    biersoorten = biersoorten.OrderBy(p => p.Soort).ToList(); 
-                    return biersoorten; 
+                    List<BeerType> beerTypes = connection.GetAll<BeerType>().ToList();
+                    beerTypes = beerTypes.OrderBy(beerType => beerType.Type).ToList(); 
+                    return beerTypes; 
                 } 
                 catch 
                 { 
@@ -32,16 +32,17 @@ namespace Pra.Bieren.Core.Services
                 } 
             }
         }
-        public List<Bier> GetBieren()
+
+        public List<Beer> GetBeers()
         {
-            using (SqlConnection connection = new SqlConnection(CS))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-                    List<Bier> bieren = connection.GetAll<Bier>().ToList();
-                    bieren = bieren.OrderBy(p => p.Naam).ToList();
-                    return bieren;
+                    List<Beer> beers = connection.GetAll<Beer>().ToList();
+                    beers = beers.OrderBy(beer => beer.Name).ToList();
+                    return beers;
                 }
                 catch
                 {
@@ -51,9 +52,9 @@ namespace Pra.Bieren.Core.Services
         }
 
         // INSERT
-        public int AddBier(Bier bier)
+        public int AddBeer(Beer bier)
         {
-            using (SqlConnection connection = new SqlConnection(CS))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
@@ -67,14 +68,15 @@ namespace Pra.Bieren.Core.Services
                 }
             }
         }
-        public int AddBierSoort(BierSoort bierSoort)
+
+        public int AddBeerType(BeerType beerType)
         {
-            using (SqlConnection connection = new SqlConnection(CS))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-                    int id = (int)connection.Insert(bierSoort);
+                    int id = (int)connection.Insert(beerType);
                     return id;
                 }
                 catch
@@ -85,14 +87,14 @@ namespace Pra.Bieren.Core.Services
         }
 
         // UPDATE
-        public bool UpdateBier(Bier bier)
+        public bool UpdateBeer(Beer beer)
         {
-            using (SqlConnection connection = new SqlConnection(CS))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-                    connection.Update(bier);
+                    connection.Update(beer);
                     return true;
                 }
                 catch
@@ -101,14 +103,15 @@ namespace Pra.Bieren.Core.Services
                 }
             }
         }
-        public bool UpdateBierSoort(BierSoort bierSoort)
+
+        public bool UpdateBeerType(BeerType beerType)
         {
-            using (SqlConnection connection = new SqlConnection(CS))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-                    connection.Update(bierSoort);
+                    connection.Update(beerType);
                     return true;
                 }
                 catch
@@ -119,14 +122,14 @@ namespace Pra.Bieren.Core.Services
         }
 
         // DELETED
-        public bool DeleteBier(Bier bier)
+        public bool DeleteBeer(Beer beer)
         {
-            using (SqlConnection connection = new SqlConnection(CS))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-                    connection.Delete(bier);
+                    connection.Delete(beer);
                     return true;
                 }
                 catch
@@ -135,16 +138,17 @@ namespace Pra.Bieren.Core.Services
                 }
             }
         }
-        public bool DeleteBierSoort(BierSoort bierSoort)
+
+        public bool DeleteBeerType(BeerType beerType)
         {
-            if (IsBierSoortInUse(bierSoort))
+            if (IsBeerTypeInUse(beerType))
                 return false;
-            using (SqlConnection connection = new SqlConnection(CS))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-                    connection.Delete(bierSoort);
+                    connection.Delete(beerType);
                     return true;
                 }
                 catch
@@ -153,17 +157,15 @@ namespace Pra.Bieren.Core.Services
                 }
             }
         }
-        private bool IsBierSoortInUse(BierSoort bierSoort)
+
+        private bool IsBeerTypeInUse(BeerType beerType)
         {
-            string sql = "select count(*) from bieren where biersoortid = @id";
-            using (SqlConnection connection = new SqlConnection(Helper.GetConnectionString()))
+            string sql = "select count(*) from beers where beertypeid = @id";
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                int count = connection.ExecuteScalar<int>(sql, bierSoort);
-                if (count == 0)
-                    return false;
-                else
-                    return true;
+                int count = connection.ExecuteScalar<int>(sql, beerType);
+                return count > 0;
             }
         }
 

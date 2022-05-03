@@ -3,46 +3,48 @@ using System.Collections.Generic;
 using System.Text;
 using Dapper.Contrib.Extensions;
 
-namespace Pra.Bieren.Core.Entities
+namespace Pra.Beers.Core.Entities
 {
-    [Table("Bieren")]
-    public class Bier
+    [Table("Beers")]
+    public class Beer
     {
-        private string naam;
+        private string name;
 
         [Key]
         public int Id { get; set; }
 
-        public string Naam
+        public string Name
         {
-            get { return naam; }
+            get { return name; }
             set
             {
                 value = value.Trim();
                 if (value.Length > 50)
                     value = value.Substring(0, 50);
-                naam = value;
+                name = value;
             }
         }
-        public int BierSoortId{get;set;}
+        public int BeerTypeID{get;set;}
         public float Alcohol { get; set; }
         public int Score { get; set; }
 
-        public Bier(string naam, int bierSoortId, float alcohol, int score)
+        public Beer(string name, int beerTypeID, float alcohol, int score)
         {
-            Naam = naam;
-            BierSoortId = bierSoortId;
+            Name = name;
+            BeerTypeID = beerTypeID;
             Alcohol = alcohol;
             Score = score;
         }
-        internal Bier(int id, string naam, int bierSoortId, float alcohol, int score)
-            :this(naam, bierSoortId, alcohol, score)
+
+        internal Beer(int id, string name, int beerTypeId, float alcohol, int score)
+            :this(name, beerTypeId, alcohol, score)
         {
             Id = id;
         }
+
         public override string ToString()
         {
-            return Naam;
+            return Name;
         }
 
     }

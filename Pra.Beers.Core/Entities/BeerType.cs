@@ -3,37 +3,40 @@ using System.Collections.Generic;
 using System.Text;
 using Dapper.Contrib.Extensions;
 
-namespace Pra.Bieren.Core.Entities
+namespace Pra.Beers.Core.Entities
 {
-    [Table("BierSoorten")]
-    public class BierSoort
+    [Table("BeerTypes")]
+    public class BeerType
     {
-        private string soort;
+        private string type;
 
         [Key]
         public int Id { get; set; }
-        public string Soort
+
+        public string Type
         {
-            get { return soort; }
+            get { return type; }
             set
             {
                 value = value.Trim();
                 if (value.Length > 50)
                     value = value.Substring(0, 50);
-                soort = value;
+                type = value;
             }
         }
-        public BierSoort(string soort)
+        public BeerType(string type)
         {
-            Soort = soort;
+            Type = type;
         }
-        internal BierSoort(int id, string soort):this(soort)
+
+        internal BeerType(int id, string type) : this(type)
         {
             Id = id;
         }
+
         public override string ToString()
         {
-            return soort;
+            return type;
         }
     }
 }
